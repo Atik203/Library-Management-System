@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_title %}
+  Library Management
+{% endblock head_title %}
+{% block content %}
+  <div class="container mx-auto flex flex-col md:flex-row items-center my-6 md:my-24">
+    <div class="flex flex-col w-full lg:w-1/2 justify-center items-start pt-12 pb-24 px-6 bg-white rounded-2xl bg-opacity-70 mx-3">
+      <h1 class="font-bold text-4xl my-3">Welcome to Library Management</h1>
+      <p class="leading-normal mb-2">
+        This is a simple library management system that allows you to manage books and users. You can add, edit, and delete books and users. You can also borrow and return books. You can also search for books and users. You can also view the list of books and users. You can also view the list of borrowed books. You can also view the list of returned books. You can also view the list of borrowed books by a user. You can also view the list of returned books by a user. You can also view the list of borrowed books by a book. You can also view the list of returned books by a book. You can also view the list of borrowed books by a user and a book. You can also view the list of returned books by a user and a book.
+      </p>
+      {% if not user.is_authenticated %}
+        <div class="flex justify-end w-full">
+          <a href="{% url 'register' %}"
+             class="bg-blue-900 text-white rounded-none hover:bg-white hover:text-blue-900 hover:border-blue-900 shadow hover:shadow-lg py-2 px-4 border border-gray-900 hover:border-transparent">Register</a>
+        </div>
+      {% endif %}
+    </div>
+    <div class="w-full lg:w-1/2 lg:py-6 text-center">
+      <img class="rounded-2xl" src="{% static '../static/img/library2.webp' %}" />
+    </div>
+  </div>
+  <h1 class="text-2xl text-center text-white font-bold">Avaiable Books</h1>
+  <div class="grid grid-cols-4 gap-4 text-white mt-16 mb-20">
+    <!-- First column for categories -->
+    <div class="col-span-1">
+      <h2 class="text-lg font-bold mb-4">Categories</h2>
+      {% for category in categories %}
+        <a class="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-2"
+           href="{% url 'category_wise_books' category.slug %}">{{ category.name }}</a>
+      {% endfor %}
+    </div>
+    <!-- Remaining columns for books -->
+    <div class="col-span-3 grid grid-cols-3 gap-6">
+      {% for book in books %}
+        <div class="card shadow-xl">
+          <img src="{{ book.image.url }}" alt="{{ book.title }}" class="w-full h-68">
+          <div class="p-4">
+            <h2 class="text-lg font-bold mb-2">{{ book.title }}</h2>
+            <p class="font-semibold">Author: {{ book.author }}</p>
+            <p class="font-semibold">Borrow Price: {{ book.borrow_price }}$</p>
+            <p class="">{{ book.description|truncatewords:20 }}</p>
+            <a href="{% url 'book_details' book.id %}"
+               class="mt-2 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Details</a>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

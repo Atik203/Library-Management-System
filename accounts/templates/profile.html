@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head_title %}
+  Library | Profile
+{% endblock head_title %}
+{% block content %}
+  <div class="bg-white px-3 py-4 rounded-xl my-6">
+    <h1 class="font-bold text-3xl text-center pb-5">History</h1>
+    <div class="w-full mt-10">
+      <div class="my-10 py-3 px-4 bg-white rounded-xl shadow-md">
+        <table class="table-auto mx-auto w-full px-5 rounded-xl mt-8 border dark:border-neutral-500">
+          <thead class="bg-purple-900 text-white text-left">
+            <tr class="bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-md py-2 px-4 text-white font-bold">
+              <th class="px-4 py-2">Borrow Date - Return Date</th>
+              <th class="px-4 py-2">Book Name</th>
+              <th class="px-4 py-2">History Type</th>
+              <th class="px-4 py-2">Amount</th>
+              <th class="px-4 py-2">Balance After Borrow</th>
+              <th class="px-4 py-2">Balance After Return</th>
+              <th class="px-4 py-2">Returned</th>
+              <th class="px-4 py-2">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for history in object_list %}
+              <tr class="border-b dark:border-neutral-500">
+                <td class="px-4 text-sm py-2">
+                  {{ history.borrow_date|date:"F d, Y h:i A" }}
+                  {% if history.history_type != "Deposit" %}
+                    - <span class="">{{ history.return_date|date:"F d, Y h:i A" }}</span>
+                  {% endif %}
+                </td>
+                {% if history.book.title %}
+                  <td class="px-4 py-2">{{ history.book.title }}</td>
+                {% else %}
+                  <td class="px-4 py-2">None</td>
+                {% endif %}
+                <td class="px-4 py-3 text-s border">
+                  <span class="px-2 py-1 font-bold leading-tight rounded-sm {% if history.history_type == 'Borrow' %} text-red-700 bg-red-100 {% else %} text-green-700 bg-green-100 {% endif %}">
+                    {{ history.history_type }}
+                  </span>
+                </td>
+                <td class="px-4 py-2">$ {{ history.amount }}</td>
+                <td class="px-4 py-2">$ {{ history.balance_after_borrow }}</td>
+                <td class="px-4 py-2">$ {{ history.balance_after_return }}</td>
+                <td class="px-4 py-2">
+                  {% if history.returned %}
+                    <span class="px-2 py-1 font-bold leading-tight rounded-sm text-green-700 bg-green-100">Yes</span>
+                  {% else %}
+                    <span class="px-2 py-1 font-bold leading-tight rounded-sm text-red-700 bg-red-100">No</span>
+                  {% endif %}
+                </td>
+                <td class="px-4 py-2">
+                  {% if history.history_type == "Borrow" and not history.returned %}
+                    <a href="{% url 'return_book' id=history.book.id %}"
+                       class="px-2 py-1 font-bold leading-tight rounded-sm text-white bg-green-500 hover:bg-green-600">Return</a>
+                  {% elif history.history_type != "Deposit" %}
+                    <span class="px-2 py-1 font-bold leading-tight rounded-sm text-gray-500 bg-gray-100">Returned</span>
+                  {% else %}
+                    <span class="px-2 py-1 font-bold leading-tight rounded-sm text-gray-500 bg-gray-100">None</span>
+                  {% endif %}
+                </td>
+              {% endfor %}
+              <tr class="bg-gray-800 text-white">
+                <th class="px-4 py-2 text-right" colspan="5">Current Balance</th>
+                <th class="px-4 py-2 text-left" colspan="3">$ {{ user.balance }}</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
