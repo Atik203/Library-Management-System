@@ -48,7 +48,6 @@ class UserRegistrationView(FormView):
         return super().form_valid(form)
     def form_invalid(self, form):
         messages.warning(self.request, 'Account creation failed')
-        messages.warning(self.request, form.errors)
         return super().form_invalid(form)
     
 class UserLoginView(LoginView):
@@ -67,7 +66,6 @@ class UserLoginView(LoginView):
         return super().form_valid(form)
     def form_invalid(self, form):
         messages.warning(self.request, 'Login failed')
-        messages.warning(self.request, form.errors)
         return super().form_invalid(form)
     
 
